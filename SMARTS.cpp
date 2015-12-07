@@ -117,6 +117,7 @@ void SMARTS::calculate(string executable) {
 	strcat(file_name,".out.txt");
 	ifstream result(file_name);
 	if (!result.is_open()) {cout<<"cannot open the result file!"<<endl;exit(1);}
+	sun_light = false;
 	while (!result.eof())
 	{
 		char buf[1024];
@@ -136,39 +137,80 @@ void SMARTS::calculate(string executable) {
 			}
 			sun_zenith = atof(token[4]);
 			sun_azimuth = atof(token[9]);
+			sun_light = true;
 			cout<<"sun zenith = "<<sun_zenith<<", sun azimuth = "<<sun_azimuth<<endl;
 		}
 	}	
-	vector <double> surface_normal(3);
-	vector <double> sun_vector(3);
-	vector <double> surface_north(3);
-	vector <double> on_surface(3);	
-	surface_normal[0] = sin(tilt*M_PI/180.0)*cos(azimuth*M_PI/180.0);
-	surface_normal[1] = sin(tilt*M_PI/180.0)*sin(azimuth*M_PI/180.0);
-	surface_normal[2] = cos(tilt*M_PI/180.0);
+	if (!sun_light) cout<<"No sun light at this time!"<<endl;
+	else {
+		vector <double> surface_normal(3);
+		vector <double> sun_vector(3);
+		vector <double> surface_north(3);
+		vector <double> on_surface(3);	
+		surface_normal[0] = sin(tilt*M_PI/180.0)*cos(azimuth*M_PI/180.0);
+		surface_normal[1] = sin(tilt*M_PI/180.0)*sin(azimuth*M_PI/180.0);
+		surface_normal[2] = cos(tilt*M_PI/180.0);
 
-	sun_vector[0] = sin(sun_zenith*M_PI/180.0)*cos(sun_azimuth*M_PI/180.0);
-	sun_vector[1] = sin(sun_zenith*M_PI/180.0)*sin(sun_azimuth*M_PI/180.0);
-	sun_vector[2] = cos(sun_zenith*M_PI/180.0);
+		sun_vector[0] = sin(sun_zenith*M_PI/180.0)*cos(sun_azimuth*M_PI/180.0);
+		sun_vector[1] = sin(sun_zenith*M_PI/180.0)*sin(sun_azimuth*M_PI/180.0);
+		sun_vector[2] = cos(sun_zenith*M_PI/180.0);
 
-	double projection = surface_normal[0]*sun_vector[0]+surface_normal[1]*sun_vector[1]+surface_normal[2]*sun_vector[2];
-	theta = acos(projection)*180.0/M_PI;
+		double projection = surface_normal[0]*sun_vector[0]+surface_normal[1]*sun_vector[1]+surface_normal[2]*sun_vector[2];
+		theta = acos(projection)*180.0/M_PI;
 	
-	surface_north[0] = cos(tilt*M_PI/180.0);
-	surface_north[1] = 0;
-	surface_north[2] = sin(tilt*M_PI/180.0);
+		surface_north[0] = cos(tilt*M_PI/180.0);
+		surface_north[1] = 0;
+		surface_north[2] = sin(tilt*M_PI/180.0);
 	
-	on_surface[0] = sun_vector[0] - projection*surface_normal[0];
-	on_surface[1] = sun_vector[1] - projection*surface_normal[1];
-	on_surface[2] = sun_vector[2] - projection*surface_normal[2];
+		on_surface[0] = sun_vector[0] - projection*surface_normal[0];
+		on_surface[1] = sun_vector[1] - projection*surface_normal[1];
+		on_surface[2] = sun_vector[2] - projection*surface_normal[2];
 
-	double on_surface_norm = sqrt(on_surface[0]*on_surface[0]+on_surface[1]*on_surface[1]+on_surface[2]*on_surface[2]);
+		double on_surface_norm = sqrt(on_surface[0]*on_surface[0]+on_surface[1]*on_surface[1]+on_surface[2]*on_surface[2]);
+		
+		phi = acos((on_surface[0]*surface_north[0]+on_surface[1]*surface_north[1]+on_surface[2]*surface_north[2])/on_surface_norm)*180.0/M_PI;
+		if (on_surface[1]<0)
+			phi = 360-phi;
+
+		cout<<"theta = "<<theta<<", phi = "<<phi<<endl;	
+	}
+		result.close();
+}
+
+void SMARTS::get_power(void){
 	
-	phi = acos((on_surface[0]*surface_north[0]+on_surface[1]*surface_north[1]+on_surface[2]*surface_north[2])/on_surface_norm)*180.0/M_PI;
-	if (on_surface[1]<0)
-		phi = 360-phi;
+	if (sun_light){
+		char file_name[1024];
+		strcpy(file_name,filename.c_str());
+		strcat(file_name,".ext.txt");
+		ifstream result(file_name);	
+		vector<vector<double>> power(num_variables);
+		vector<double> wavelength;
+		double wav;
+		char buf[1024];
+		result.getline(buf,1024);
+		while (result>>wav)
+		{
+			wavelength.push_back(wav);
+			for (int i=0;i<num_variables;i++){
+				double tmp; result>>tmp;
+				power[i].push_back(tmp);	
+			}
+		}
+	
+		for (int i = 0 ;i<num_variables;i++){
+			double int_power = 0;
+			for (int j = 0; j<wavelength.size()-1;j++){
+				int_power+= (power[i][j]+power[i][j+1])*(wavelength[j+1]-wavelength[j])/2.0;
+			}
+			cout<<int_power<<endl;
+		}
+	}
+}
 
-	cout<<"theta = "<<theta<<", phi = "<<phi<<endl;	
-
-	result.close();
+void SMARTS::set_time(int year, int month, int day, double hour){
+	this->year 	= year;
+	this->month = month;
+	this->day 	= day;
+	this->hour 	= hour;
 }

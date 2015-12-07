@@ -51,11 +51,13 @@ class SMARTS {
 	double sun_azimuth;
 	double theta;
 	double phi;
+	bool sun_light;
 public:
 	SMARTS();
 	void set_time(int,int,int,double);
 	void get_input(string);
 	void calculate(string);
+	void get_power(void);
 	
 };
 
