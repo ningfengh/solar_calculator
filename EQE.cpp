@@ -144,3 +144,11 @@ double EQE::get_eqe(double phi, double theta, double wavelength) {
 	
 	return c0*(1.0-zd) + c1*zd;
 }
+
+void EQE::set_time(int year, int month, int day, double hour){
+	smarts_cal.set_time(year,month,day,hour);
+	smarts_cal.get_input("try");
+	smarts_cal.calculate("./smarts295");
+	smarts_cal.get_power();
+
+}
