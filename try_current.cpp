@@ -6,25 +6,20 @@
 int main (void)
 {
 	EQE my_calculation("./EQE_O4_aSi/O4_aSi");
-	double phi = 0;
-	ofstream myout("my_eqe_fine.txt");		
-	for (double theta = 30; theta<=30; theta+=0.1){
-		for (double wav = 400; wav<=690; wav+=0.10) {
-			myout<<wav<<" "<<my_calculation.get_eqe(phi,theta,wav)<<endl;
-		}
-		
-	}	
-	myout.close();
+	
+	ofstream myfile("Power.txt");
 
-	myout.open("my_eqe.txt");		
-	for (double theta = 35; theta<=35; theta+=0.1){
-		for (double wav = 400; wav<=690; wav+=10) {
-			myout<<wav<<" "<<my_calculation.get_eqe(phi,theta,wav)<<endl;
-		}
-		
-	}	
-	myout.close();
-
+	for (double tilt = 0; tilt <= 100 ; tilt+=5)
+	{
+	my_calculation.set_tilt(tilt);
+	for (double hour = 5; hour <= 19; hour+=0.2)
+	{	
+		my_calculation.set_time(2015,12,1,hour);
+		myfile<<my_calculation.get_direct_power()<<" ";
+	}
+	myfile<<endl;
+	}
+	myfile.close();
 
 	return 1;
 		

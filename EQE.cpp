@@ -79,6 +79,8 @@ EQE::EQE(string file_prefix){
 		}	
 		data.push_back(theta_tmp);
 	}  
+	Voc = 0.90;
+	FF 	= 0.60;
 }
 
 double EQE::get_eqe(double phi, double theta, double wavelength) {
@@ -150,5 +152,24 @@ void EQE::set_time(int year, int month, int day, double hour){
 	smarts_cal.get_input("try");
 	smarts_cal.calculate("./smarts295");
 	smarts_cal.get_power();
+}
 
+double EQE::get_direct_power() {
+	if (!smarts_cal.sun_light) return 0;
+	else {
+		double int_power = 0;
+		for (int i = 0; i<smarts_cal.wavelength.size()-1;i++){
+			
+			int_power+= (smarts_cal.power[1][i]+smarts_cal.power[1][i+1])*(smarts_cal.wavelength[i+1]-smarts_cal.wavelength[i])/2.0
+				*get_eqe(smarts_cal.phi,smarts_cal.theta,(smarts_cal.wavelength[i]+smarts_cal.wavelength[i+1])/2.0)
+				*FACTOR*(smarts_cal.wavelength[i]+smarts_cal.wavelength[i+1])/2.0
+				*Voc*FF;
+		}
+		return int_power;
+	}
+
+}
+
+void EQE::set_tilt(double tilt) {
+	smarts_cal.set_tilt(tilt);
 }

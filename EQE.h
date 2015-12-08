@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include "SMARTS.h"
+#define FACTOR 		8.065544000768418e-4
 using namespace std;
 
 class EQE{
@@ -19,11 +20,15 @@ class EQE{
 	vector<vector<vector<double>>> data;
 	int symmetry;
 	SMARTS smarts_cal;
+	double Voc;
+	double FF;
 	
 public:
 	double get_eqe(double,double,double);
 	EQE(string);
 	void set_time(int, int , int , double);
+	void set_tilt(double);
+	double get_direct_power(void);
 };
 
 

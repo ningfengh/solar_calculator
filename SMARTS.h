@@ -11,6 +11,7 @@
 using namespace std;
 const char* const DELIMITER = " ";
 class SMARTS {
+	friend class EQE;
 	string comment;
 	int ISPR;
 	double pressure, altitude, height;
@@ -52,13 +53,17 @@ class SMARTS {
 	double theta;
 	double phi;
 	bool sun_light;
+	vector<vector<double>> power;
+	vector<double> wavelength;
+
+
 public:
 	SMARTS();
 	void set_time(int,int,int,double);
 	void get_input(string);
 	void calculate(string);
 	void get_power(void);
-	
+	void set_tilt(double);
 };
 
 #endif//_SMARTS_

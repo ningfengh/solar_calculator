@@ -36,8 +36,9 @@ SMARTS::SMARTS() {
 	variables.push_back(7);
 	variables.push_back(8);
 	variables.push_back(9);
-
+	
 	num_variables = variables.size();
+	power.resize(num_variables);
 	ICIRC 		= 0;
 	ISCAN 		= 0;
 	ILLUM 		= 0;
@@ -184,11 +185,14 @@ void SMARTS::get_power(void){
 		strcpy(file_name,filename.c_str());
 		strcat(file_name,".ext.txt");
 		ifstream result(file_name);	
-		vector<vector<double>> power(num_variables);
-		vector<double> wavelength;
+
 		double wav;
 		char buf[1024];
 		result.getline(buf,1024);
+		wavelength.clear();
+		for (int i = 0; i < num_variables; i++) {
+			power[i].clear();
+		}
 		while (result>>wav)
 		{
 			wavelength.push_back(wav);
@@ -213,4 +217,8 @@ void SMARTS::set_time(int year, int month, int day, double hour){
 	this->month = month;
 	this->day 	= day;
 	this->hour 	= hour;
+}
+
+void SMARTS::set_tilt(double tilt) {
+	this->tilt = tilt;
 }
