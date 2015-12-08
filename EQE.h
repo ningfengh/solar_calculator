@@ -10,6 +10,7 @@ using namespace std;
 
 class EQE{
 	string name;
+	int n_wav,n_theta,n_phi;
 	vector<double> wavelength;
 	vector<double> theta;
 	vector<double> phi;
