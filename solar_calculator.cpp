@@ -11,6 +11,7 @@ int main (void)
 	smarts_input.get_input("try");
 	smarts_input.calculate("./smarts295");
 	smarts_input.get_power();
+	cout<<my_calculation.get_eqe(15,100,560)<<endl;
 	return 1;
 		
 }

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 class EQE{
