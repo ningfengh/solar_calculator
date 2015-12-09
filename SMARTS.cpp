@@ -24,11 +24,11 @@ SMARTS::SMARTS() {
  	tilt 		= 37.0;
 	azimuth 	= 180.0;
 	min_wav 	= 280;
-	max_wav 	= 4000;
+	max_wav 	= 1000;
 	sun_earth_correction = 1.0;
 	solar_constant = 1367.0;
 	IPRT 		= 2;
-	step_size 	= 0.5;
+	step_size 	= 2;
 	
 	
 	variables.push_back(2);
@@ -139,11 +139,10 @@ void SMARTS::calculate(string executable) {
 			sun_zenith = atof(token[4]);
 			sun_azimuth = atof(token[9]);
 			sun_light = true;
-			cout<<"sun zenith = "<<sun_zenith<<", sun azimuth = "<<sun_azimuth<<endl;
+			//cout<<"sun zenith = "<<sun_zenith<<", sun azimuth = "<<sun_azimuth<<endl;
 		}
 	}	
-	if (!sun_light) cout<<"No sun light at this time!"<<endl;
-	else {
+	if (sun_light) {
 		vector <double> surface_normal(3);
 		vector <double> sun_vector(3);
 		vector <double> surface_north(3);
@@ -173,9 +172,9 @@ void SMARTS::calculate(string executable) {
 		if (on_surface[1]<0)
 			phi = 360-phi;
 
-		cout<<"theta = "<<theta<<", phi = "<<phi<<endl;	
+		//cout<<"theta = "<<theta<<", phi = "<<phi<<endl;	
 	}
-		result.close();
+	result.close();
 }
 
 void SMARTS::get_power(void){
@@ -207,7 +206,7 @@ void SMARTS::get_power(void){
 			for (int j = 0; j<wavelength.size()-1;j++){
 				int_power+= (power[i][j]+power[i][j+1])*(wavelength[j+1]-wavelength[j])/2.0;
 			}
-			cout<<int_power<<endl;
+			//cout<<int_power<<endl;
 		}
 	}
 }
