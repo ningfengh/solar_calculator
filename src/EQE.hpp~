@@ -22,9 +22,8 @@ class EQE{
 	SMARTS smarts_cal;
 	double Voc;
 	double FF;
-	
-public:
 	double get_eqe(double,double,double);
+public:
 	EQE(string);
 	void set_time(int, int , int , double);
 	void set_tilt(double);

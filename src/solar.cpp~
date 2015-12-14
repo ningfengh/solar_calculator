@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "EQE.h"
+#include "EQE.hpp"
 
 void GetDate(int N, int &M, int &D){
 	int accu_m[] = {0,31,59,90,120,151,181,212,243,273,304,334,365};
@@ -14,6 +14,10 @@ int main (void)
 {
 	//EQE my_calculation("./slab/slab_aSi");
 	EQE my_calculation("./EQE_O4_aSi/O4_aSi");
+	
+
+
+
 	my_calculation.set_tilt(90);
 	ofstream myfile("Power_year_90_O4.txt");
 	double year_power = 0;	

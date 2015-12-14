@@ -10,8 +10,15 @@
 #define M_PI           3.14159265358979323846
 using namespace std;
 const char* const DELIMITER = " ";
+
+
+
+
 class SMARTS {
 	friend class EQE;
+
+/****************************************/
+/*       SMARTS PARAMETERS              */
 	string comment;
 	int ISPR;
 	double pressure, altitude, height;
@@ -47,21 +54,24 @@ class SMARTS {
 	int month;
 	int day;
 	double hour;
-	string filename;
 	double sun_zenith;
 	double sun_azimuth;
 	double theta;
 	double phi;
 	bool sun_light;
+
+/****************************************/
+
+
+	string filename;
 	vector<vector<double>> power;
 	vector<double> wavelength;
-
+	void get_input(string);
+	void calculate(string);
 
 public:
 	SMARTS();
-	void set_time(int,int,int,double);
-	void get_input(string);
-	void calculate(string);
+	void set_time(int, int, int, double);
 	void get_power(void);
 	void set_tilt(double);
 };

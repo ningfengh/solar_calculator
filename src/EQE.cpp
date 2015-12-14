@@ -1,5 +1,39 @@
-#include "EQE.h"
+#include "EQE.hpp"
 
+/*******************************************************************************************************************/
+/*
+EQE class reads the EQE data from external files and intepolate it to feed 
+the energy output calculation
+
+*/
+
+/* 
+The format of EQE data files
+
+
+In general, the EQE data is a 3-dimensional function of wavelength, phi
+and theta. 
+
+
+file_prefix_input.txt
+	contains only one line, representing the symmetry fold of phi, 
+	for example, for the hexagonal lattice, this number should be 6
+
+file_prefix_wavelength.txt
+	first line is the number of wavelength points
+	following lines are the wavelength in units of nanometers
+
+file_prefix_theta.txt
+	first line is the number of theta points
+	following lines are theta 
+
+file_prefix_phi.txt
+	first line is the number of phi points
+	following lines are phi
+
+file_prefix_theta_AAA_phi_BBB.txt
+	actual wavelength dependent EQE for theta AAA and phi BBB
+*/
 
 
 
@@ -79,19 +113,27 @@ EQE::EQE(string file_prefix){
 		}	
 		data.push_back(theta_tmp);
 	}  
-	Voc = 0.90;
+	Voc = 0.90;   // initial value for aSi, can be changed
 	FF 	= 0.60;
 }
 
 double EQE::get_eqe(double phi, double theta, double wavelength) {
+
+/*
+trilinear interpolation of EQE data 
+*/
+
+	double c00,c01,c10,c11,c0,c1;
+	double xd,yd,zd;
+	int x0,x1,y0,y1,z0,z1;
+
 	if (symmetry==-1){
 		phi = 0;
 	}
 	else {	
 		phi = fmod(phi,360.0/symmetry);
 	}
-	double xd,yd,zd;
-	int x0,x1,y0,y1,z0,z1;
+
 
 	if (phi<=this->phi[0]){
 		x0 = 0; x1 = 0; xd = 0;	
@@ -131,11 +173,7 @@ double EQE::get_eqe(double phi, double theta, double wavelength) {
 		z0 = z1-1;
 		zd = (wavelength - this->wavelength[z0])/(this->wavelength[z1]-this->wavelength[z0]);
 	}	
-	
 
-	//cout << x0<<" "<<y0<<" "<<z0<<endl;
-	//cout << xd<<" "<<yd<<" "<<zd<<endl;
-	double c00,c01,c10,c11,c0,c1;
 	c00 = data[x0][y0][z0]*(1.0-xd) + data[x1][y0][z0]*xd;
 	c01 = data[x0][y0][z1]*(1.0-xd) + data[x1][y0][z1]*xd;
 	c10 = data[x0][y1][z0]*(1.0-xd) + data[x1][y1][z0]*xd;
@@ -149,12 +187,16 @@ double EQE::get_eqe(double phi, double theta, double wavelength) {
 
 void EQE::set_time(int year, int month, int day, double hour){
 	smarts_cal.set_time(year,month,day,hour);
-	smarts_cal.get_input("try");
-	smarts_cal.calculate("./smarts295");
 	smarts_cal.get_power();
 }
 
 double EQE::get_direct_power() {
+
+/*
+EQE weighted power output from the solar cell by direct illumination by the sun
+trapz numerical integration is used
+*/
+
 	if (!smarts_cal.sun_light) return 0;
 	else {
 		double int_power = 0;

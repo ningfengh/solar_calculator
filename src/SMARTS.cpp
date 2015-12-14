@@ -1,4 +1,4 @@
-#include "SMARTS.h"
+#include "SMARTS.hpp"
 
 using namespace std;
 
@@ -181,8 +181,10 @@ void SMARTS::calculate(string executable) {
 
 void SMARTS::get_power(void){
 	
+
 	get_input("try");
 	calculate("./smarts295");	
+
 
 	if (sun_light){
 		char file_name[1024];
