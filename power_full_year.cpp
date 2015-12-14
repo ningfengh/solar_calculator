@@ -14,8 +14,8 @@ int main (void)
 {
 	//EQE my_calculation("./slab/slab_aSi");
 	EQE my_calculation("./EQE_O4_aSi/O4_aSi");
-	my_calculation.set_tilt(60);
-	ofstream myfile("Power_year_60_O4.txt");
+	my_calculation.set_tilt(90);
+	ofstream myfile("Power_year_90_O4.txt");
 	double year_power = 0;	
 	for (int N = 1; N<=365; N++)
 	{

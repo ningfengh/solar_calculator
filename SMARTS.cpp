@@ -167,8 +167,10 @@ void SMARTS::calculate(string executable) {
 		on_surface[2] = sun_vector[2] - projection*surface_normal[2];
 
 		double on_surface_norm = sqrt(on_surface[0]*on_surface[0]+on_surface[1]*on_surface[1]+on_surface[2]*on_surface[2]);
-		
-		phi = acos((on_surface[0]*surface_north[0]+on_surface[1]*surface_north[1]+on_surface[2]*surface_north[2])/on_surface_norm)*180.0/M_PI;
+		double proj_temp = (on_surface[0]*surface_north[0]+on_surface[1]*surface_north[1]+on_surface[2]*surface_north[2])/on_surface_norm;
+		if (proj_temp>1) proj_temp = 1;
+		if (proj_temp<-1) proj_temp = -1;
+		phi = acos(proj_temp)*180.0/M_PI;
 		if (on_surface[1]<0)
 			phi = 360-phi;
 
@@ -179,6 +181,9 @@ void SMARTS::calculate(string executable) {
 
 void SMARTS::get_power(void){
 	
+	get_input("try");
+	calculate("./smarts295");	
+
 	if (sun_light){
 		char file_name[1024];
 		strcpy(file_name,filename.c_str());
