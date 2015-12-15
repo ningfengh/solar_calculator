@@ -1,5 +1,5 @@
 #include "EQE.hpp"
-
+using namespace std;
 /*******************************************************************************************************************/
 /*
 EQE class reads the EQE data from external files and intepolate it to feed 
@@ -38,19 +38,19 @@ file_prefix_theta_AAA_phi_BBB.txt
 
 
 EQE::EQE(string file_prefix){
-	char filename[1024];
-	char theta_str[1024];
-	char phi_str[1024];
-	strcpy(filename,file_prefix.c_str());
-	strcat(filename,"_input.txt");
-	ifstream ifs(filename);
+	string filename;
+	string theta_str;
+	string phi_str;
+
+	filename = file_prefix + "_input.txt";
+	ifstream ifs(filename);    // C++11 allows directly use of string in ifstream constructor
+
 	if (!ifs.is_open()) {cout<<"Cannot open input file!"<<endl;exit(1);}
 	ifs>>symmetry;
 	ifs.close();
 
 	
-	strcpy(filename,file_prefix.c_str());
-	strcat(filename,"_wavelength.txt");
+	filename = file_prefix + "_wavelength.txt";
 	ifs.open(filename);
 	if (!ifs.is_open()) {cout<<"Cannot open wavelength file!"<<endl;exit(1);}
 	
@@ -62,8 +62,7 @@ EQE::EQE(string file_prefix){
 	}
 	ifs.close();
 
-	strcpy(filename,file_prefix.c_str());
-	strcat(filename,"_theta.txt");
+	filename = file_prefix + "_theta.txt";
 	ifs.open(filename);
 	if (!ifs.is_open()) {cout<<"Cannot open theta file!"<<endl;exit(1);}
 	
@@ -75,8 +74,7 @@ EQE::EQE(string file_prefix){
 	}
 	ifs.close();
 
-	strcpy(filename,file_prefix.c_str());
-	strcat(filename,"_phi.txt");
+	filename = file_prefix + "_phi.txt";
 	ifs.open(filename);
 	if (!ifs.is_open()) {cout<<"Cannot open phi file!"<<endl;exit(1);}
 	
@@ -92,14 +90,7 @@ EQE::EQE(string file_prefix){
 	for (int i = 0; i < n_phi; i++){
 		vector<vector<double>> theta_tmp;		
 		for (int j = 0; j < n_theta; j++){
-			strcpy(filename, file_prefix.c_str());
-			strcat(filename, "_theta_");
-			sprintf(theta_str,"%d",(int)theta[j]);
-			strcat(filename, theta_str);
-			strcat(filename, "_phi_");
-			sprintf(phi_str,"%d",(int)phi[i]);
-			strcat(filename, phi_str);
-			strcat(filename, ".txt");
+			filename = file_prefix+"_theta_"+to_string((int)theta[j])+"_phi_"+to_string((int)phi[i])+".txt";
 			ifs.open(filename);	
 			if (!ifs.is_open()) {cout<<"Cannot open EQE file "<<filename<<"!"<<endl;exit(1);}
 			vector<double> wav_tmp;
@@ -200,7 +191,7 @@ trapz numerical integration is used
 	if (!smarts_cal.sun_light) return 0;
 	else {
 		double int_power = 0;
-		for (int i = 0; i<smarts_cal.wavelength.size()-1;i++){
+		for (size_t i = 0; i<smarts_cal.wavelength.size()-1;i++){
 			
 			int_power+= (smarts_cal.power[1][i]+smarts_cal.power[1][i+1])*(smarts_cal.wavelength[i+1]-smarts_cal.wavelength[i])/2.0
 				*get_eqe(smarts_cal.phi,smarts_cal.theta,(smarts_cal.wavelength[i]+smarts_cal.wavelength[i+1])/2.0)

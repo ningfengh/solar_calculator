@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include "EQE.hpp"
-
+using namespace std;
 void GetDate(int N, int &M, int &D){
 	int accu_m[] = {0,31,59,90,120,151,181,212,243,273,304,334,365};
 	M = 0;
@@ -32,11 +32,11 @@ int main (void)
 		}
 		double int_power = 0;		
 		
-		for (int i = 0; i < hour_vector.size()-1; i ++){
+		for (size_t i = 0; i < hour_vector.size()-1; i ++){
 			int_power+=(power[i]+power[i+1])*(hour_vector[i+1]-hour_vector[i])/2.0;
 		}
-		myfile<<N<<" "<<int_power<<" "<<hour_vector.size()<<endl;
-		cout<<M<<" "<<D<<" "<<int_power<<endl;
+		myfile<<N<<"\t"<<int_power<<"\t"<<hour_vector.size()<<endl;
+		cout<<M<<"\t"<<D<<"\t"<<int_power<<endl;
 		year_power += int_power;
 	}
 

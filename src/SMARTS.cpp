@@ -54,11 +54,10 @@ SMARTS::SMARTS() {
 }
 
 void SMARTS::get_input(string file_name) {
-	char file[1024];
+
 	filename = file_name;
-	strcpy(file,file_name.c_str());
-	strcat(file,".inp.txt");
-	ofstream m_file(file);
+	ofstream m_file(file_name+".inp.txt");
+
 	m_file<<"'"<<comment<<"'"<<"\t\t!Card 1 Comment"<<endl;
 	m_file<<ISPR<<"\t\t\t\t!Card 2 ISPR"<<endl;
 	m_file<<pressure<<" "<<altitude<<" "<<height<<"\t\t\t!Card 2a Pressure, altitude, height"<<endl;
@@ -79,7 +78,7 @@ void SMARTS::get_input(string file_name) {
 	m_file<<IPRT<<"\t\t\t\t!Card 12 IPRT"<<endl;
 	m_file<<min_wav<<" "<<max_wav<<" "<<step_size<<"\t\t\t!Card 12a Min & max wavelengths to be printedl ideal printing step size"<<endl;
 	m_file<<num_variables<<"\t\t\t\t!Card 12b Number of Variables to Print"<<endl;
-	for (int i=0;i<num_variables;i++) m_file<<variables[i]<<" ";
+	for (size_t i=0;i<num_variables;i++) m_file<<variables[i]<<" ";
 	m_file<<"\t\t\t!Card 12c Variable codes"<<endl;
 	m_file<<ICIRC<<"\t\t\t\t!Card 13 ICIRC bypass here"<<endl;
 	m_file<<ISCAN<<"\t\t\t\t!Card 14 ISCAN"<<endl;
@@ -91,12 +90,9 @@ void SMARTS::get_input(string file_name) {
 
 
 //  at the same time delete the ext and out files
-	strcpy(file,file_name.c_str());
-	strcat(file,".ext.txt");
-	remove(file);
-	strcpy(file,file_name.c_str());
-	strcat(file,".out.txt");
-	remove(file);
+
+	remove((file_name+".ext.txt").c_str());
+	remove((file_name+".out.txt").c_str());
 	remove("dump.txt");
 }
 
@@ -108,15 +104,13 @@ void SMARTS::calculate(string executable) {
 	tmp<<filename<<endl;
 	tmp<<"Y"<<endl;
 	tmp.close();
-	char cmd[1024];
-	strcpy(cmd,executable.c_str());
-	strcat(cmd,"<tmp.txt>dump.txt");
-	system(cmd);
+//    Execute SMARTS2 software
+	int err = system((executable+"<tmp.txt>dump.txt").c_str());
+	if (err) {cout<<"Error when executing SMARTS2"<<endl;exit(1);}
+
 	remove("tmp.txt");
-	char file_name[1024];
-	strcpy(file_name,filename.c_str());
-	strcat(file_name,".out.txt");
-	ifstream result(file_name);
+
+	ifstream result(filename+".out.txt");
 	if (!result.is_open()) {cout<<"cannot open the result file!"<<endl;exit(1);}
 	sun_light = false;
 	while (!result.eof())
@@ -168,7 +162,7 @@ void SMARTS::calculate(string executable) {
 
 		double on_surface_norm = sqrt(on_surface[0]*on_surface[0]+on_surface[1]*on_surface[1]+on_surface[2]*on_surface[2]);
 		double proj_temp = (on_surface[0]*surface_north[0]+on_surface[1]*surface_north[1]+on_surface[2]*surface_north[2])/on_surface_norm;
-		if (proj_temp>1) proj_temp = 1;
+		if (proj_temp>1) proj_temp = 1;  // to prevent the numerical error which can cause projection to be slightly larger than one
 		if (proj_temp<-1) proj_temp = -1;
 		phi = acos(proj_temp)*180.0/M_PI;
 		if (on_surface[1]<0)
@@ -196,21 +190,21 @@ void SMARTS::get_power(void){
 		char buf[1024];
 		result.getline(buf,1024);
 		wavelength.clear();
-		for (int i = 0; i < num_variables; i++) {
+		for (size_t i = 0; i < num_variables; i++) {
 			power[i].clear();
 		}
 		while (result>>wav)
 		{
 			wavelength.push_back(wav);
-			for (int i=0;i<num_variables;i++){
+			for (size_t i = 0;i < num_variables;i++){
 				double tmp; result>>tmp;
 				power[i].push_back(tmp);	
 			}
 		}
 	
-		for (int i = 0 ;i<num_variables;i++){
+		for (size_t i = 0 ;i<num_variables;i++){
 			double int_power = 0;
-			for (int j = 0; j<wavelength.size()-1;j++){
+			for (size_t j = 0; j<wavelength.size()-1;j++){
 				int_power+= (power[i][j]+power[i][j+1])*(wavelength[j+1]-wavelength[j])/2.0;
 			}
 			//cout<<int_power<<endl;

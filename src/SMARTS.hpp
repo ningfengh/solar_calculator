@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <cmath>
 #define M_PI           3.14159265358979323846
-using namespace std;
+
 const char* const DELIMITER = " ";
 
 
@@ -19,17 +19,17 @@ class SMARTS {
 
 /****************************************/
 /*       SMARTS PARAMETERS              */
-	string comment;
+	std::string comment;
 	int ISPR;
 	double pressure, altitude, height;
 	int IATMOS;
-	string Atmos;
+	std::string Atmos;
 	int IH2O;
 	int IO3;
 	int IGAS;
 	double CO2;
 	int ISPCTR;
-	string Aeros;
+	std::string Aeros;
 	int ITURB;
 	double Turb;
 	int IALBDX;
@@ -40,8 +40,8 @@ class SMARTS {
 	double solar_constant;
 	int IPRT;
 	double step_size;
-	int num_variables;
-	vector<int> variables;
+	size_t num_variables;
+	std::vector<int> variables;
 	int ICIRC;
 	int ISCAN;
 	int ILLUM;
@@ -63,11 +63,11 @@ class SMARTS {
 /****************************************/
 
 
-	string filename;
-	vector<vector<double>> power;
-	vector<double> wavelength;
-	void get_input(string);
-	void calculate(string);
+	std::string filename;
+	std::vector<std::vector<double>> power;
+	std::vector<double> wavelength;
+	void get_input(std::string);
+	void calculate(std::string);
 
 public:
 	SMARTS();

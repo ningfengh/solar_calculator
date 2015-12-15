@@ -4,27 +4,26 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <cstring>
 #include <iostream>
-#include <cmath>
+
 #include "SMARTS.hpp"
 #define FACTOR 		8.065544000768418e-4
-using namespace std;
+
 
 class EQE{
-	string name;
+	std::string name;
 	int n_wav,n_theta,n_phi;
-	vector<double> wavelength;
-	vector<double> theta;
-	vector<double> phi;
-	vector<vector<vector<double>>> data;
+	std::vector<double> wavelength;
+	std::vector<double> theta;
+	std::vector<double> phi;
+	std::vector<std::vector<std::vector<double>>> data;
 	int symmetry;
 	SMARTS smarts_cal;
 	double Voc;
 	double FF;
 	double get_eqe(double,double,double);
 public:
-	EQE(string);
+	EQE(std::string);
 	void set_time(int, int , int , double);
 	void set_tilt(double);
 	double get_direct_power(void);
