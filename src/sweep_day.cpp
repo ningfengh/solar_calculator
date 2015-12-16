@@ -19,7 +19,7 @@ int main (void)
 	double theta, phi;
 	my_cal.set_tilt(90);
 	my_cal.set_time(2015, 6 , 21 , 6);
-	my_cal.get_power();
+	my_cal.get_power("spectra_6am.txt");
 	my_cal.get_sun_position(sun_zenith, sun_azimuth);
 	my_cal.get_incident_angle(theta, phi);	
 	cout<<time<<" "<<sun_zenith<<" "<<sun_azimuth<<" "<<theta<<" "<<phi<<endl;	

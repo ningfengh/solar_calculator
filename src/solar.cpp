@@ -3,7 +3,7 @@
 #include <fstream>
 #include "EQE.hpp"
 using namespace std;
-void GetDate(int N, int &M, int &D){
+void GetDate(const int &N, int &M, int &D){
 	int accu_m[] = {0,31,59,90,120,151,181,212,243,273,304,334,365};
 	M = 0;
 	while (N>accu_m[M]) M++;
@@ -12,9 +12,18 @@ void GetDate(int N, int &M, int &D){
 
 int main (void)
 {
-	//EQE my_calculation("./slab/slab_aSi");
-	EQE my_calculation("./EQE_O4_aSi/O4_aSi");
+
+
 	
+
+
+	//EQE my_calculation("./slab/slab_aSi");
+	//EQE my_calculation("./EQE_O4_aSi/O4_aSi");
+	
+	
+
+
+/*
 	my_calculation.set_tilt(90);
 	ofstream myfile("Power_year_90_O4.txt");
 	double year_power = 0;	
@@ -43,7 +52,7 @@ int main (void)
 	cout<<"total power = "<<year_power<<endl;
 
 	myfile.close();
-
+*/
 	return 1;
 		
 }

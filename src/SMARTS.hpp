@@ -74,6 +74,8 @@ public:
 	void set_time(int, int, int, double);
 	void get_power(void);
 	void set_tilt(double);
+	void get_sun_position(double&, double&);
+	void get_incident_angle(double&, double&);
 };
 
 #endif//_SMARTS_

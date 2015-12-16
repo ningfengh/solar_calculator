@@ -170,6 +170,11 @@ void SMARTS::calculate(string executable) {
 
 		//cout<<"theta = "<<theta<<", phi = "<<phi<<endl;	
 	}
+	else
+	{
+		sun_zenith = 91;
+		sun_azimuth = 0;		
+	}
 	result.close();
 }
 
@@ -212,6 +217,47 @@ void SMARTS::get_power(void){
 	}
 }
 
+
+void SMARTS::get_power(string output_file){
+	
+
+	get_input("try");
+	calculate("./smarts295");	
+
+
+	if (sun_light){
+		ifstream result(filename+".ext.txt");
+		ofstream output(output_file);	
+
+		double wav;
+		char buf[1024];
+		result.getline(buf,1024);
+		wavelength.clear();
+		for (size_t i = 0; i < num_variables; i++) {
+			power[i].clear();
+		}
+		while (result>>wav)
+		{
+			wavelength.push_back(wav);
+			output<<wav<<"\t";
+			for (size_t i = 0;i < num_variables;i++){
+				double tmp; result>>tmp;
+				power[i].push_back(tmp);	
+				output<<tmp<<"\t";
+			}
+			output<<endl;
+		}
+	
+		for (size_t i = 0 ;i<num_variables;i++){
+			double int_power = 0;
+			for (size_t j = 0; j<wavelength.size()-1;j++){
+				int_power+= (power[i][j]+power[i][j+1])*(wavelength[j+1]-wavelength[j])/2.0;
+			}
+			//cout<<int_power<<endl;
+		}
+	}
+}
+
 void SMARTS::set_time(int year, int month, int day, double hour){
 	this->year 	= year;
 	this->month = month;
@@ -222,3 +268,15 @@ void SMARTS::set_time(int year, int month, int day, double hour){
 void SMARTS::set_tilt(double tilt) {
 	this->tilt = tilt;
 }
+
+void SMARTS::get_sun_position(double &sun_zenith, double &sun_azimuth){
+	sun_zenith = this->sun_zenith;
+	sun_azimuth = this->sun_azimuth;
+}
+
+void SMARTS::get_incident_angle(double &theta, double &phi){
+	theta = this->theta;
+	phi = this->phi;
+}
+
+ 

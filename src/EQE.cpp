@@ -206,3 +206,4 @@ trapz numerical integration is used
 void EQE::set_tilt(double tilt) {
 	smarts_cal.set_tilt(tilt);
 }
+
