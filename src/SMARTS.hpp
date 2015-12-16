@@ -73,6 +73,7 @@ public:
 	SMARTS();
 	void set_time(int, int, int, double);
 	void get_power(void);
+	void get_power(std::string);
 	void set_tilt(double);
 	void get_sun_position(double&, double&);
 	void get_incident_angle(double&, double&);

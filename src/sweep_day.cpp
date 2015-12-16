@@ -17,12 +17,15 @@ int main (void)
 	SMARTS my_cal;
 	double sun_zenith, sun_azimuth;
 	double theta, phi;
-	my_cal.set_tilt(90);
-	my_cal.set_time(2015, 6 , 21 , 6);
-	my_cal.get_power("spectra_6am.txt");
-	my_cal.get_sun_position(sun_zenith, sun_azimuth);
-	my_cal.get_incident_angle(theta, phi);	
-	cout<<time<<" "<<sun_zenith<<" "<<sun_azimuth<<" "<<theta<<" "<<phi<<endl;	
+	my_cal.set_tilt(0);
+	for (double time = 12; time<=16; time+=1)
+	{
+		my_cal.set_time(2015, 6 , 21 , time);
+		my_cal.get_power("spectra_tilt_0_time_"+to_string((int)time)+".txt");
+		my_cal.get_sun_position(sun_zenith, sun_azimuth);
+		my_cal.get_incident_angle(theta, phi);	
+		cout<<time<<" "<<sun_zenith<<" "<<sun_azimuth<<" "<<theta<<" "<<phi<<endl;
+	}	
 /*
 	for (double time = 0; time < 24; time+=0.01) {
 
